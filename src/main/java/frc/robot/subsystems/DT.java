@@ -18,7 +18,7 @@ public class DT extends SubsystemBase {
   public WPI_VictorSPX frontLeft;
   public WPI_VictorSPX backRight;
   public WPI_VictorSPX backLeft;
-
+  public WPI_VictorSPX intakeMotor;
   /* Creates a new Motor Object */
   /** Creates a new Drivetrain. (Note the args passed through are getting the axis of the controller joystick) */
   public DT() {
@@ -27,6 +27,7 @@ public class DT extends SubsystemBase {
     frontLeft = new WPI_VictorSPX(1);
     backRight = new WPI_VictorSPX(2);
     backLeft = new WPI_VictorSPX(3);
+    intakeMotor = new WPI_VictorSPX(4);
     driveTrain = new DifferentialDrive(
       (double output) -> {
         frontLeft.set(output);
@@ -43,5 +44,11 @@ public class DT extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     driveTrain.arcadeDrive(xb1.getRawAxis(0), xb1.getRawAxis(1));
+    if(xb1.getAButtonPressed()){
+      intakeMotor.set(-1);
+    }
+    if(xb1.getAButtonReleased()){
+      intakeMotor.set(0);
+    }
   }
 }

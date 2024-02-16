@@ -5,20 +5,30 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.XboxController;
 public class DT extends SubsystemBase {
   public DifferentialDrive driveTrain;
-  private XboxController xb1 = new XboxController(0);
+  private CommandXboxController xb1 = new CommandXboxController(0);
 
   public WPI_VictorSPX frontRight;
   public WPI_VictorSPX frontLeft;
   public WPI_VictorSPX backRight;
   public WPI_VictorSPX backLeft;
   public WPI_VictorSPX intakeMotor;
+  public static CANSparkMax shooterRight;
+  public static CANSparkMax shooterLeft;
+  public Trigger rightTrigger = xb1.rightTrigger();
+  public Trigger lefTrigger = xb1.leftTrigger();
+  public Trigger aButton = xb1.a();
   /* Creates a new Motor Object */
   /** Creates a new Drivetrain. (Note the args passed through are getting the axis of the controller joystick) */
   public DT() {
@@ -28,6 +38,8 @@ public class DT extends SubsystemBase {
     backRight = new WPI_VictorSPX(2);
     backLeft = new WPI_VictorSPX(3);
     intakeMotor = new WPI_VictorSPX(4);
+    shooterRight = new CANSparkMax(5, MotorType.kBrushless);
+    shooterLeft = new CANSparkMax(6, MotorType.kBrushless);
     driveTrain = new DifferentialDrive(
       (double output) -> {
         frontLeft.set(output);
@@ -39,16 +51,28 @@ public class DT extends SubsystemBase {
     }
     );
   }
-
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    driveTrain.arcadeDrive(xb1.getRawAxis(0), xb1.getRawAxis(1));
-    if(xb1.getAButtonPressed()){
+    driveTrain.arcadeDrive(xb1.getRawAxis(1), xb1.getRightX());
+    if(aButton.getAsBoolean() == true){
       intakeMotor.set(-1);
-    }
-    if(xb1.getAButtonReleased()){
+    } else if(aButton.getAsBoolean() == false){
       intakeMotor.set(0);
+    }
+    if(rightTrigger.getAsBoolean() == true){
+      shooterRight.set(1);
+      shooterLeft.set(1);
+    }else if(rightTrigger.getAsBoolean() == false){
+      shooterRight.set(0);
+      shooterLeft.set(0);
+    }
+    if(lefTrigger.getAsBoolean() == true){
+      shooterRight.set(-1);
+      shooterLeft.set(-1);
+    } else if(lefTrigger.getAsBoolean() == false){
+      shooterRight.set(0);
+      shooterLeft.set(0);
     }
   }
 }

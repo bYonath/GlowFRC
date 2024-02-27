@@ -22,9 +22,6 @@ public class DT extends SubsystemBase {
   public WPI_VictorSPX frontLeft;
   public WPI_VictorSPX backRight;
   public WPI_VictorSPX backLeft;
-  public WPI_VictorSPX intakeMotor;
-  public static CANSparkMax shooterRight;
-  public static CANSparkMax shooterLeft;
   public WPI_VictorSPX transferMotor;
   public Trigger rightTrigger = xb1.rightTrigger();
   public Trigger rightBumper = xb1.rightBumper();
@@ -35,13 +32,11 @@ public class DT extends SubsystemBase {
   /** Creates a new Drivetrain. (Note the args passed through are getting the axis of the controller joystick) */
   public DT() {
     // Initializes all the motors. 
-    frontRight = new WPI_VictorSPX(0);
+    frontRight = new WPI_VictorSPX(7);
     frontLeft = new WPI_VictorSPX(1);
     backRight = new WPI_VictorSPX(2);
     backLeft = new WPI_VictorSPX(3);
-    intakeMotor = new WPI_VictorSPX(4);
-    shooterRight = new CANSparkMax(5, MotorType.kBrushless);
-    shooterLeft = new CANSparkMax(6, MotorType.kBrushless);
+    
     transferMotor = new WPI_VictorSPX(7);
     // Initializes the drive train as a new instance of the DifferentialDrive class
     driveTrain = new DifferentialDrive(
@@ -62,36 +57,5 @@ public class DT extends SubsystemBase {
     // Using the tankDrive (or arcadeDrive) method of the driveTrain class and flipping the right side inputs to fit driver's tastes and have both sides move the same way
     //driveTrain.tankDrive(xb1.getRightY() * -1, xb1.getLeftY());
     driveTrain.arcadeDrive(xb1.getRightX(), xb1.getLeftY());
-    if(leftBumper.getAsBoolean() == true){
-      intakeMotor.set(-1);
-      transferMotor.set(-1);
-    } else if(leftBumper.getAsBoolean() == false){
-      intakeMotor.set(0);
-    }
-    if(leftTrigger.getAsBoolean() == true){
-      intakeMotor.set(-1);
-      transferMotor.set(-1);
-    } else if(leftTrigger.getAsBoolean() == false){
-      intakeMotor.set(0);
-      transferMotor.set(0);
-    }
-    if(rightBumper.getAsBoolean() == true){
-      shooterRight.set(1);
-      shooterLeft.set(1);
-      transferMotor.set(-1);
-    } else if (rightBumper.getAsBoolean() == false){
-      shooterRight.set(0);
-      shooterLeft.set(0);
-      transferMotor.set(0);
-    }
-    if(rightTrigger.getAsBoolean() == true){
-      shooterRight.set(-1);
-      shooterLeft.set(-1);
-      transferMotor.set(-1);
-    } else if(rightTrigger.getAsBoolean() == false){
-      shooterRight.set(0);
-      shooterLeft.set(0);
-      transferMotor.set(0);
-    }
   }
 }

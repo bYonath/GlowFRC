@@ -8,6 +8,12 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 
 import frc.robot.subsystems.DT;
+import frc.robot.subsystems.Feeder;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
+
+import com.ctre.phoenix6.configs.FeedbackConfigs;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -23,6 +29,9 @@ public class RobotContainer {
   // private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
   private final DT m_drivetrain = new DT();
+  private final Intake m_intake = new Intake();
+  private final Shooter m_shooter = new Shooter();
+  private final Feeder m_feeder = new Feeder();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -32,6 +41,9 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
+    m_intake.setDefaultCommand(m_intake.idleIntake());
+    m_shooter.setDefaultCommand(m_shooter.idleShooter());
+    m_feeder.setDefaultCommand(m_feeder.idleFeeder());
   }
 
   /**
@@ -51,6 +63,12 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    m_driverController.leftBumper().whileTrue(m_intake.runIntake().alongWith(m_feeder.runFeeder()));
+    m_driverController.leftTrigger().whileTrue(m_intake.reverseIntake().alongWith(m_feeder.reverseFeeder()));
+    m_driverController.rightBumper().whileTrue(m_shooter.runShooter());
+    m_driverController.rightTrigger().whileTrue(m_shooter.reverseShooter().alongWith(m_feeder.reverseFeeder()));
+    
+
   }
 
   /**

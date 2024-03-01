@@ -5,16 +5,18 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Feeder extends SubsystemBase {
-  private final WPI_VictorSPX feederMotor;
+  private final CANSparkMax feederMotor;
   
   /** Creates a new Feeder. */
   public Feeder() {
-    feederMotor = new WPI_VictorSPX(8);
+    feederMotor = new CANSparkMax(9, MotorType.kBrushless);
     feederMotor.setInverted(true);
   }
 

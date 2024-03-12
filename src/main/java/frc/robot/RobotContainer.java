@@ -6,11 +6,12 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
-
+import frc.robot.subsystems.arm;
 import frc.robot.subsystems.DT;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.arm;
 
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 
@@ -32,7 +33,7 @@ public class RobotContainer {
   private final Intake m_intake = new Intake();
   private final Shooter m_shooter = new Shooter();
   private final Feeder m_feeder = new Feeder();
-
+  private final arm m_arm = new arm();
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
@@ -44,6 +45,7 @@ public class RobotContainer {
     m_intake.setDefaultCommand(m_intake.idleIntake());
     m_shooter.setDefaultCommand(m_shooter.idleShooter());
     m_feeder.setDefaultCommand(m_feeder.idleFeeder());
+    m_arm.setDefaultCommand(m_arm.idleArm());
   }
 
   /**
@@ -67,7 +69,8 @@ public class RobotContainer {
     m_driverController.leftTrigger().whileTrue(m_intake.reverseIntake().alongWith(m_feeder.reverseFeeder()));
     m_driverController.rightBumper().whileTrue(m_shooter.runShooter());
     m_driverController.rightTrigger().whileTrue(m_shooter.reverseShooter().alongWith(m_feeder.reverseFeeder()));
-    
+    m_driverController.povUp().whileTrue(m_arm.armUp());
+    m_driverController.povDown().whileTrue(m_arm.armDown());
 
   }
 

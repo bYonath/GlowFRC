@@ -4,15 +4,23 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import com.ctre.phoenix6.*;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.Constants;
+import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.DT;
+import com.revrobotics.ColorSensorV3;
+import com.revrobotics.ColorMatchResult;
+import com.revrobotics.ColorMatch;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -21,6 +29,10 @@ import frc.robot.subsystems.DT;
  * project.
  */
 public class Robot extends TimedRobot {
+  private final I2C.Port i2cPort = I2C.Port.kOnboard;
+  private final ColorSensorV3 cSens = new ColorSensorV3(i2cPort);
+  private final ColorMatch m_colorMatcher = new ColorMatch();
+  private final Color k_orange = new Color(1.0, 0.64705884, 0.0);
   private Command m_autonomousCommand;
     private final XboxController xb1 = new XboxController(OperatorConstants.kDriverControllerPort);
   // private DT dt = new DT();
@@ -35,7 +47,13 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
+    CameraServer.startAutomaticCapture();
     m_robotContainer = new RobotContainer();
+    m_colorMatcher.addColorMatch(k_orange);
+    // Forwards all ports 5800 -> 5807 so that we can connect to our limelight over usb coonnection to roboRio.
+     for (int port = 5800; port <= 5807; port++) {
+            PortForwarder.add(port, "limelight.local", port);
+        }
   }
 
 
@@ -52,6 +70,10 @@ public class Robot extends TimedRobot {
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
+    Color detectedColor = cSens.getColor();
+    if(detectedColor == k_orange){
+      System.out.println("Color orange detected [TEMP CODE]");
+    }
     CommandScheduler.getInstance().run();
   }
 

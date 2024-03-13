@@ -18,6 +18,8 @@ import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.DT;
+import frc.robot.subsystems.LEDController;
+
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.ColorMatchResult;
 import com.revrobotics.ColorMatch;
@@ -33,9 +35,9 @@ public class Robot extends TimedRobot {
   private final ColorSensorV3 cSens = new ColorSensorV3(i2cPort);
   private final ColorMatch m_colorMatcher = new ColorMatch();
   private final Color k_orange = new Color(1.0, 0.64705884, 0.0);
+  private final LEDController led_controller = new LEDController(0);
   private Command m_autonomousCommand;
     private final XboxController xb1 = new XboxController(OperatorConstants.kDriverControllerPort);
-  // private DT dt = new DT();
   private RobotContainer m_robotContainer;
   // Initializes the xbox controller and statically references the port from Constants for simplicities sake. Value is typically set to 0.
 
@@ -50,6 +52,7 @@ public class Robot extends TimedRobot {
     CameraServer.startAutomaticCapture();
     m_robotContainer = new RobotContainer();
     m_colorMatcher.addColorMatch(k_orange);
+    led_controller.Rainbow();
     // Forwards all ports 5800 -> 5807 so that we can connect to our limelight over usb coonnection to roboRio.
      for (int port = 5800; port <= 5807; port++) {
             PortForwarder.add(port, "limelight.local", port);
@@ -72,7 +75,9 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     Color detectedColor = cSens.getColor();
     if(detectedColor == k_orange){
-      System.out.println("Color orange detected [TEMP CODE]");
+      led_controller.Green();
+    } else {
+      led_controller.set(0.61);
     }
     CommandScheduler.getInstance().run();
   }
@@ -88,7 +93,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
+    led_controller.Rainbow();
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();

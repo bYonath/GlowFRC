@@ -14,6 +14,7 @@ public class arm extends SubsystemBase {
   /** Creates a new arm. */
   public arm() {
     arm = new WPI_VictorSPX(11);  
+    arm.setInverted(true);
   }
 
   @Override
@@ -27,12 +28,12 @@ public class arm extends SubsystemBase {
   }
   public Command armUp() {
     return run(() -> {
-      arm.set(0.25);
+      arm.set(0.5);
     });
   }
   public Command armDown(){
     return run(() -> {
-      arm.set(-0.25);
+      arm.set(-0.5);
     });
   }
 }

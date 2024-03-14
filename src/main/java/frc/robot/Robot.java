@@ -12,22 +12,31 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import com.ctre.phoenix6.*;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.Constants;
+// import frc.robot.subsystems.Encoder;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.DT;
-import frc.robot.subsystems.LEDController;
+// import frc.robot.subsystems.LEDController;
+import frc.robot.subsystems.arm;
 
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.ColorMatchResult;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import com.revrobotics.ColorMatch;
 
 /**
- * The VM is configured to automatically run this class, and to call the functions corresponding to
- * each mode, as described in the TimedRobot documentation. If you change the name of this class or
- * the package after creating this project, you must also update the build.gradle file in the
+ * The VM is configured to automatically run this class, and to call the
+ * functions corresponding to
+ * each mode, as described in the TimedRobot documentation. If you change the
+ * name of this class or
+ * the package after creating this project, you must also update the
+ * build.gradle file in the
  * project.
  */
 public class Robot extends TimedRobot {
@@ -35,65 +44,96 @@ public class Robot extends TimedRobot {
   private final ColorSensorV3 cSens = new ColorSensorV3(i2cPort);
   private final ColorMatch m_colorMatcher = new ColorMatch();
   private final Color k_orange = new Color(1.0, 0.64705884, 0.0);
-  private final LEDController led_controller = new LEDController(0);
+  // private final LEDController led_controller = new LEDController(0);
+  private final XboxController xb1 = new XboxController(OperatorConstants.kDriverControllerPort);
   private Command m_autonomousCommand;
-    private final XboxController xb1 = new XboxController(OperatorConstants.kDriverControllerPort);
   private RobotContainer m_robotContainer;
-  // Initializes the xbox controller and statically references the port from Constants for simplicities sake. Value is typically set to 0.
+  private static final String m_defaultAuto = "Default";
+  private String m_autoSelected;
+  private final SendableChooser<String> m_chooser = new SendableChooser<>();
+  public arm enc = new arm();
+  // Initializes the xbox controller and statically references the port from
+  // Constants for simplicities sake. Value is typically set to 0.
 
   /**
-   * This function is run when the robot is first started up and should be used for any
+   * This function is run when the robot is first started up and should be used
+   * for any
    * initialization code.
    */
   @Override
   public void robotInit() {
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    // autonomous chooser on the dashboard.
+
+    System.out.println("Encoder Connected?: " + arm.enDC.isConnected());
+    m_chooser.setDefaultOption("Default Auto", m_defaultAuto);
+    SmartDashboard.putData("Auto choices", m_chooser);
     CameraServer.startAutomaticCapture();
     m_robotContainer = new RobotContainer();
+
+    // Adds orange as a potential color to match.
     m_colorMatcher.addColorMatch(k_orange);
-    led_controller.Rainbow();
-    // Forwards all ports 5800 -> 5807 so that we can connect to our limelight over usb coonnection to roboRio.
-     for (int port = 5800; port <= 5807; port++) {
-            PortForwarder.add(port, "limelight.local", port);
-        }
+
+    // Sets the led controller to the rainbow color pattern.
+    // led_controller.Rainbow();
+
+    // Forwards all ports 5800 -> 5807 so that we can connect to our limelight over
+    // usb coonnection to roboRio.
+    for (int port = 5800; port <= 5807; port++) {
+      PortForwarder.add(port, "limelight.local", port);
+    }
   }
 
-
   /**
-   * This function is called every 20 ms, no matter the mode. Use this for items like diagnostics
+   * This function is called every 20 ms, no matter the mode. Use this for items
+   * like diagnostics
    * that you want ran during disabled, autonomous, teleoperated and test.
    *
-   * <p>This runs after the mode specific periodic functions, but before LiveWindow and
+   * <p>
+   * This runs after the mode specific periodic functions, but before LiveWindow
+   * and
    * SmartDashboard integrated updating.
    */
   @Override
   public void robotPeriodic() {
-    // Runs the Scheduler.  This is responsible for polling buttons, adding newly-scheduled
-    // commands, running already-scheduled commands, removing finished or interrupted commands,
-    // and running subsystem periodic() methods.  This must be called from the robot's periodic
+    // Runs the Scheduler. This is responsible for polling buttons, adding
+    // newly-scheduled
+    // commands, running already-scheduled commands, removing finished or
+    // interrupted commands,
+    // and running subsystem periodic() methods. This must be called from the
+    // robot's periodic
     // block in order for anything in the Command-based framework to work.
-    Color detectedColor = cSens.getColor();
-    if(detectedColor == k_orange){
-      led_controller.Green();
-    } else {
-      led_controller.set(0.61);
-    }
+
+    // Gets the current detected color and checks if the color matches orange.
+    // If the color matches orange switches our led strips color to green, else it will change the color to red.
+    // Color detectedColor = cSens.getColor();
+    // if (detectedColor == k_orange) {
+    //   led_controller.Green();
+    // } else {
+    //   led_controller.set(0.61);
+    // }
+    
     CommandScheduler.getInstance().run();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+  }
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+  }
 
-  /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
+  /**
+   * This autonomous runs the autonomous command selected by your
+   * {@link RobotContainer} class.
+   */
   @Override
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-    led_controller.Rainbow();
+    m_autoSelected = m_chooser.getSelected();
+    System.out.println("Auto selected: " + m_autoSelected);
+    // During auton sets our led strip to rainbow.
+    // led_controller.Rainbow();
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -102,7 +142,8 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+  }
 
   @Override
   public void teleopInit() {
@@ -119,13 +160,13 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     // DifferentialDrive driveTrain = new DifferentialDrive(
-    //   (double output) -> {
-    //     motor.frontLeft.set(output);
-    //     motor.backLeft.set(output);
+    // (double output) -> {
+    // motor.frontLeft.set(output);
+    // motor.backLeft.set(output);
     // },
     // (double output) -> {
-    //     motor.frontRight.set(output);
-    //     motor.backRight.set(output);
+    // motor.frontRight.set(output);
+    // motor.backRight.set(output);
     // }
     // );
     // CommandScheduler.getInstance().run();
@@ -139,13 +180,16 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during test mode. */
   @Override
-  public void testPeriodic() {}
+  public void testPeriodic() {
+  }
 
   /** This function is called once when the robot is first started up. */
   @Override
-  public void simulationInit() {}
+  public void simulationInit() {
+  }
 
   /** This function is called periodically whilst in simulation. */
   @Override
-  public void simulationPeriodic() {}
+  public void simulationPeriodic() {
+  }
 }

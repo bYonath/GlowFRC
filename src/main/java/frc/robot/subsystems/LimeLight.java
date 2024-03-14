@@ -49,6 +49,5 @@ public class LimeLight extends SubsystemBase {
 
     public void driverMode() {
         table.getEntry("camMode").setNumber(1);
-        //table.getEntry("ledMode").setNumber(3);
     }
 }

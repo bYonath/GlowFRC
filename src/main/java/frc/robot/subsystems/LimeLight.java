@@ -18,6 +18,12 @@ public class LimeLight extends SubsystemBase {
   double x = tx.getDouble(0.0);
   double y = ty.getDouble(0.0);
   double area = ta.getDouble(0.0);
+  double targetOffsetAngle_Vertical;
+  double limelightMountAngleDegrees = 0;
+  double limelightLensHeightInches = 0;
+  double goalHeightInches = 0;
+  
+
   /** Creates a new LimeLight. */
   public LimeLight() {
      table = NetworkTableInstance.getDefault().getTable("limelight");
@@ -49,5 +55,10 @@ public class LimeLight extends SubsystemBase {
 
     public void driverMode() {
         table.getEntry("camMode").setNumber(1);
+    }
+    public void calcDistance(){
+      double angleToGoalDegrees = limelightMountAngleDegrees + targetOffsetAngle_Vertical;
+      double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
+      double distanceFromLimelightToGoalInches = (goalHeightInches - limelightLensHeightInches) / Math.tan(angleToGoalRadians); 
     }
 }

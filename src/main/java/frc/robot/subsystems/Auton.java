@@ -5,9 +5,13 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import frc.robot.subsystems.LimeLight;
+import frc.robot.subsystems.arm;
+import edu.wpi.first.wpilibj.Timer;
 public class Auton extends SubsystemBase {
   /** Creates a new Auton. */
+  private final LimeLight lml = new LimeLight();
+  private final arm A = new arm();
   public Auton() {
     
   }
@@ -15,5 +19,9 @@ public class Auton extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    
+  }
+  public void adjustArm(){
+    
   }
 }

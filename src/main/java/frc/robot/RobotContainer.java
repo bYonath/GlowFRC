@@ -75,7 +75,7 @@ public class RobotContainer {
     m_driverController.rightTrigger().whileTrue(m_shooter.reverseShooter().alongWith(m_feeder.reverseFeeder()));
     m_driverController.povUp().whileTrue(m_arm.armUp());
     m_driverController.povDown().whileTrue(m_arm.armDown());
-
+    m_driverController.a().whileTrue(m_shooter.slowedShooter());
   }
 
   /**

@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.DT;
-// import frc.robot.subsystems.LEDController;
+import frc.robot.subsystems.LEDController;
 import frc.robot.subsystems.arm;
 
 import com.revrobotics.ColorSensorV3;
@@ -43,8 +43,8 @@ public class Robot extends TimedRobot {
   private final I2C.Port i2cPort = I2C.Port.kOnboard;
   private final ColorSensorV3 cSens = new ColorSensorV3(i2cPort);
   private final ColorMatch m_colorMatcher = new ColorMatch();
-  private final Color k_orange = new Color(1.0, 0.64705884, 0.0);
-  // private final LEDController led_controller = new LEDController(0);
+  private final Color k_orange = new Color(.3333333333333333, 0.4470588235294118, 0.21568627450980393);
+  private final LEDController led_controller = new LEDController(0);
   private final XboxController xb1 = new XboxController(OperatorConstants.kDriverControllerPort);
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
@@ -104,13 +104,20 @@ public class Robot extends TimedRobot {
 
     // Gets the current detected color and checks if the color matches orange.
     // If the color matches orange switches our led strips color to green, else it will change the color to red.
-    // Color detectedColor = cSens.getColor();
-    // if (detectedColor == k_orange) {
-    //   led_controller.Green();
-    // } else {
-    //   led_controller.set(0.61);
-    // }
-    
+    Color detectedColor = cSens.getColor();
+    ColorMatchResult match = m_colorMatcher.matchClosestColor(detectedColor);
+    String current_color = "";
+    if (match.color == k_orange && !current_color.equals("orange")) {
+      led_controller.Green();
+      current_color = "orange";
+      System.out.println("Color is orange");
+    } else if(current_color == "" && match.color != k_orange){
+      System.out.println("Color is not orange");
+      led_controller.set(0.61);
+      current_color = "";
+    }
+        System.out.println(match.color);
+
     CommandScheduler.getInstance().run();
   }
 
@@ -159,17 +166,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    // DifferentialDrive driveTrain = new DifferentialDrive(
-    // (double output) -> {
-    // motor.frontLeft.set(output);
-    // motor.backLeft.set(output);
-    // },
-    // (double output) -> {
-    // motor.frontRight.set(output);
-    // motor.backRight.set(output);
-    // }
-    // );
-    // CommandScheduler.getInstance().run();
+     CommandScheduler.getInstance().run();
   }
 
   @Override

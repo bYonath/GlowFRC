@@ -27,13 +27,13 @@ public class Feeder extends SubsystemBase {
 
   public Command runFeeder() {
     return run(() -> {
-      feederMotor.set(0.5);
+      feederMotor.set(1);
     });
   }
 
   public Command reverseFeeder() {
     return run(() -> {
-      feederMotor.set(-0.5);
+      feederMotor.set(-1);
     });
   }
 

@@ -43,7 +43,12 @@ public class Shooter extends SubsystemBase {
       shooterRight.set(-1);
     });
   }
-
+  public Command slowedShooter() {
+    return run(() -> {
+      shooterLeft.set(.25);
+      shooterRight.set(.25);
+    });
+  }
   public Command idleShooter() {
     return run(() -> {
       shooterLeft.set(0);

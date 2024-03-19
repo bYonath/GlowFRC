@@ -14,11 +14,22 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.arm;
 
+import java.io.IOException;
+import java.nio.file.FileSystem;
+import java.nio.file.Path;
+
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 
+import edu.wpi.first.math.trajectory.TrajectoryUtil;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -35,6 +46,10 @@ public class RobotContainer {
   private final Shooter m_shooter = new Shooter();
   private final Feeder m_feeder = new Feeder();
   private final arm m_arm = new arm();
+  // private final SysIdRoutine m_robot = new SysIdRoutine(
+  //   new SysIdRoutine.Config(),
+  //   new SysIdRoutine.Mechanism(, null, m_arm)
+  // )
   // private final LEDController m_led_controller = new LEDController(0);
 
 
@@ -52,6 +67,23 @@ public class RobotContainer {
     m_arm.setDefaultCommand(m_arm.idleArm());
   }
 
+  // public Command loadPathPlannerTrajectoryToRamseteCommand(String filename, boolean resetOdomtry){
+  //   Trajectory trajectory;
+  //   try{
+  //     Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(filename);
+  //     trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+  //   }catch(IOException exception){
+  //     DriverStation.reportError("Unable to open trajectory", exception.getStackTrace());
+  //     System.out.println("Unable to read file " + filename);
+  //     return new InstantCommand();
+  //   }
+
+  //   RamseteCommand ramseteCommand = new RamseteCommand(trajectory, DT::getPos, null, null, null, null)
+
+
+
+
+  // }
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary

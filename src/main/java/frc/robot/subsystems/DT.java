@@ -9,11 +9,16 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.OperatorConstants;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.wpilibj.DutyCycle;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.XboxController;
 public class DT extends SubsystemBase {
   public DifferentialDrive driveTrain;
@@ -23,11 +28,8 @@ public class DT extends SubsystemBase {
   public WPI_VictorSPX backRight;
   public WPI_VictorSPX backLeft;
   public WPI_VictorSPX transferMotor;
-  public Trigger rightTrigger = xb1.rightTrigger();
-  public Trigger rightBumper = xb1.rightBumper();
-  public Trigger leftTrigger = xb1.leftTrigger();
-  public Trigger aButton = xb1.a();
-  public Trigger leftBumper = xb1.leftBumper();
+  public DutyCycleEncoder driveTrainEncoder; 
+  // private final DifferentialDriveOdometry m_odometry;
   /* Creates a new Motor Object */
   /** Creates a new Drivetrain. (Note the args passed through are getting the axis of the controller joystick) */
   public DT() {
@@ -36,7 +38,7 @@ public class DT extends SubsystemBase {
     frontLeft = new WPI_VictorSPX(1);
     backRight = new WPI_VictorSPX(2);
     backLeft = new WPI_VictorSPX(3);
-    
+    driveTrainEncoder = new DutyCycleEncoder(OperatorConstants.driveTrainEncoderPort);
     transferMotor = new WPI_VictorSPX(7);
     // Initializes the drive train as a new instance of the DifferentialDrive class
     driveTrain = new DifferentialDrive(
@@ -49,6 +51,10 @@ public class DT extends SubsystemBase {
         backRight.set(output);
     }
     );
+    // m_odometry = new DifferentialDriveOdometry(xb1.get, null, null)
+  }
+  public double getPos(){
+    return driveTrainEncoder.getAbsolutePosition();
   }
   @Override
   public void periodic() {

@@ -23,6 +23,7 @@ public class LEDController extends SubsystemBase {
       set(0.65);
   }
   public void Rainbow(){
+    System.out.println("Color set to rainbow");
     set(-0.99);
   }
   @Override

@@ -51,6 +51,7 @@ public class Robot extends TimedRobot {
   private static final String m_defaultAuto = "Default";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
+  private final SendableChooser<String> color_chooser = new SendableChooser<>();
   public arm enc = new arm();
   // Initializes the xbox controller and statically references the port from
   // Constants for simplicities sake. Value is typically set to 0.
@@ -66,9 +67,11 @@ public class Robot extends TimedRobot {
     System.out.println("Encoder Connected?: " + arm.enDC.isConnected());
     m_chooser.setDefaultOption("Default Auto", m_defaultAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
+    // color_chooser.("Rainbow", led_controller.Rainbow());
+    SmartDashboard.putData("LED Choice", color_chooser);
     CameraServer.startAutomaticCapture();
     m_robotContainer = new RobotContainer();
-
+    led_controller.Rainbow();
     // Adds orange as a potential color to match.
     m_colorMatcher.addColorMatch(k_orange);
 
@@ -107,16 +110,16 @@ public class Robot extends TimedRobot {
     Color detectedColor = cSens.getColor();
     ColorMatchResult match = m_colorMatcher.matchClosestColor(detectedColor);
     String current_color = "";
-    if (match.color == k_orange && !current_color.equals("orange")) {
-      led_controller.Green();
-      current_color = "orange";
-      System.out.println("Color is orange");
-    } else if(current_color == "" && match.color != k_orange){
-      System.out.println("Color is not orange");
-      led_controller.set(0.61);
-      current_color = "";
-    }
-        System.out.println(match.color);
+    // if (match.color == k_orange && !current_color.equals("orange")) {
+    //   led_controller.Green();
+    //   current_color = "orange";
+    //   System.out.println("Color is orange");
+    // } else if(current_color == "" && match.color != k_orange){
+    //   System.out.println("Color is not orange");
+    //   led_controller.set(0.61);
+    //   current_color = "";
+    // }
+        // System.out.println(match.color);
 
     CommandScheduler.getInstance().run();
   }

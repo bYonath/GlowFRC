@@ -21,11 +21,13 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.subsystems.Auton;
 import frc.robot.subsystems.DT;
 import frc.robot.subsystems.LEDController;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.arm;
 
-import com.revrobotics.ColorSensorV3;
+// import com.revrobotics.ColorSensorV3;
 import com.revrobotics.ColorMatchResult;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import com.revrobotics.ColorMatch;
@@ -41,18 +43,22 @@ import com.revrobotics.ColorMatch;
  */
 public class Robot extends TimedRobot {
   private final I2C.Port i2cPort = I2C.Port.kOnboard;
-  private final ColorSensorV3 cSens = new ColorSensorV3(i2cPort);
+  // private final ColorSensorV3 cSens = new ColorSensorV3(i2cPort);
   private final ColorMatch m_colorMatcher = new ColorMatch();
   private final Color k_orange = new Color(.3333333333333333, 0.4470588235294118, 0.21568627450980393);
-  private final LEDController led_controller = new LEDController(0);
+  private final LEDController led_controller = new LEDController();
   private final XboxController xb1 = new XboxController(OperatorConstants.kDriverControllerPort);
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
   private static final String m_defaultAuto = "Default";
   private String m_autoSelected;
+  private final Auton auto = new Auton();
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
   private final SendableChooser<String> color_chooser = new SendableChooser<>();
+  public int i = 0;
   public arm enc = new arm();
+  private final DT m_drive = new DT();
+  // private final SysIdRoutineBot m_robot = new SysIdRoutineBot();
   // Initializes the xbox controller and statically references the port from
   // Constants for simplicities sake. Value is typically set to 0.
 
@@ -71,13 +77,11 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("LED Choice", color_chooser);
     CameraServer.startAutomaticCapture();
     m_robotContainer = new RobotContainer();
-    led_controller.Rainbow();
+    System.out.println("Robot Initialized current LED color: " + led_controller.getColor());
     // Adds orange as a potential color to match.
     m_colorMatcher.addColorMatch(k_orange);
-
     // Sets the led controller to the rainbow color pattern.
-    // led_controller.Rainbow();
-
+    led_controller.Green();
     // Forwards all ports 5800 -> 5807 so that we can connect to our limelight over
     // usb coonnection to roboRio.
     for (int port = 5800; port <= 5807; port++) {
@@ -107,9 +111,9 @@ public class Robot extends TimedRobot {
 
     // Gets the current detected color and checks if the color matches orange.
     // If the color matches orange switches our led strips color to green, else it will change the color to red.
-    Color detectedColor = cSens.getColor();
-    ColorMatchResult match = m_colorMatcher.matchClosestColor(detectedColor);
-    String current_color = "";
+    // Color detectedColor = cSens.getColor();
+    // ColorMatchResult match = m_colorMatcher.matchClosestColor(detectedColor);
+    // String current_color = "";
     // if (match.color == k_orange && !current_color.equals("orange")) {
     //   led_controller.Green();
     //   current_color = "orange";
@@ -120,13 +124,17 @@ public class Robot extends TimedRobot {
     //   current_color = "";
     // }
         // System.out.println(match.color);
-
+      if(i == 0){
+        led_controller.Green();
+        i++;
+      }
     CommandScheduler.getInstance().run();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
+    led_controller.Rainbow();
   }
 
   @Override
@@ -139,14 +147,17 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-    m_autoSelected = m_chooser.getSelected();
-    System.out.println("Auto selected: " + m_autoSelected);
+    // m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    // m_autoSelected = m_chooser.getSelected();
+    // System.out.println("Auto selected: " + m_autoSelected);
+    // m_autonomousCommand = m_robot.getAutonomousCommand();
+
+    
     // During auton sets our led strip to rainbow.
     // led_controller.Rainbow();
     // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
+    if (auto.tempAuton(m_drive, m_robotContainer.m_shooter, m_robotContainer.m_feeder, m_robotContainer.m_intake) != null) {
+      auto.tempAuton(m_drive, m_robotContainer.m_shooter, m_robotContainer.m_feeder, m_robotContainer.m_intake).schedule();
     }
   }
 
@@ -161,8 +172,8 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
+    if (auto.tempAuton(m_drive, m_robotContainer.m_shooter, m_robotContainer.m_feeder, m_robotContainer.m_intake) != null) {
+      auto.tempAuton(m_drive, m_robotContainer.m_shooter, m_robotContainer.m_feeder, m_robotContainer.m_intake).cancel();
     }
   }
 

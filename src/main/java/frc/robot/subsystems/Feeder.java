@@ -30,7 +30,11 @@ public class Feeder extends SubsystemBase {
       feederMotor.set(1);
     });
   }
-
+  public Command autoFeeder() {
+    return run(() -> {
+      feederMotor.set(1);
+    }).withTimeout(.1);
+  }
   public Command reverseFeeder() {
     return run(() -> {
       feederMotor.set(-1);

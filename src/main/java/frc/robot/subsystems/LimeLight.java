@@ -56,9 +56,10 @@ public class LimeLight extends SubsystemBase {
     public void driverMode() {
         table.getEntry("camMode").setNumber(1);
     }
-    public void calcDistance(){
+    public double calcDistance(){
       double angleToGoalDegrees = limelightMountAngleDegrees + targetOffsetAngle_Vertical;
       double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
       double distanceFromLimelightToGoalInches = (goalHeightInches - limelightLensHeightInches) / Math.tan(angleToGoalRadians); 
+      return distanceFromLimelightToGoalInches;
     }
 }

@@ -10,7 +10,7 @@ import frc.robot.subsystems.arm;
 import frc.robot.subsystems.DT;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
-// import frc.robot.subsystems.LEDController;
+import frc.robot.subsystems.LEDController;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.arm;
 
@@ -21,6 +21,10 @@ import java.nio.file.Path;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 
 import edu.wpi.first.math.trajectory.TrajectoryUtil;
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.MutableMeasure;
+import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.Voltage;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -29,8 +33,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -42,21 +44,17 @@ public class RobotContainer {
   // private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
 
   private final DT m_drivetrain = new DT();
-  private final Intake m_intake = new Intake();
-  private final Shooter m_shooter = new Shooter();
-  private final Feeder m_feeder = new Feeder();
+  public final Intake m_intake = new Intake();
+  public final Shooter m_shooter = new Shooter();
+  public final Feeder m_feeder = new Feeder();
   private final arm m_arm = new arm();
-  // private final SysIdRoutine m_robot = new SysIdRoutine(
-  //   new SysIdRoutine.Config(),
-  //   new SysIdRoutine.Mechanism(, null, m_arm)
-  // )
+  private final DT m_drive = new DT();
   // private final LEDController m_led_controller = new LEDController(0);
 
 
   //  Creates a CommandXboxController //Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
-
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
@@ -65,6 +63,7 @@ public class RobotContainer {
     m_shooter.setDefaultCommand(m_shooter.idleShooter());
     m_feeder.setDefaultCommand(m_feeder.idleFeeder());
     m_arm.setDefaultCommand(m_arm.idleArm());
+    // m_drive.setDefaultCommand(m_drive.arcadeDriveCommand(m_driverController.getRightX(), m_driverController.getLeftY()));
   }
 
   // public Command loadPathPlannerTrajectoryToRamseteCommand(String filename, boolean resetOdomtry){
@@ -108,6 +107,8 @@ public class RobotContainer {
     m_driverController.povUp().whileTrue(m_arm.armUp());
     m_driverController.povDown().whileTrue(m_arm.armDown());
     m_driverController.a().whileTrue(m_shooter.slowedShooter());
+    m_driverController.x().whileTrue(m_shooter.trapShoot());
+    // m_driverController.b().onTrue(m_drive.driveForward());
   }
 
   /**

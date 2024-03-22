@@ -25,8 +25,13 @@ public class Intake extends SubsystemBase {
 
   public Command runIntake() {
     return run(() -> {
-      intakeMotor.set(1);
+      intakeMotor.set(.7);
     });
+  }
+  public Command autoIntake() {
+    return run(() -> {
+      intakeMotor.set(.75);
+    }).withTimeout(1);
   }
   public Command reverseIntake() {
     return run(() -> {

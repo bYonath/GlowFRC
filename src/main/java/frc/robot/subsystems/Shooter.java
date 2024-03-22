@@ -11,13 +11,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shooter extends SubsystemBase {
-  public CANSparkMax shooterRight;
-  public CANSparkMax shooterLeft;
+  public CANSparkMax shooterRight = new CANSparkMax(15, MotorType.kBrushless);
 
+  public CANSparkMax shooterLeft = new CANSparkMax(6, MotorType.kBrushless);
+    
   /** Creates a new Shooter. */
   public Shooter() {
-    shooterRight = new CANSparkMax(5, MotorType.kBrushless);
-    shooterLeft = new CANSparkMax(6, MotorType.kBrushless);
+    
     shooterLeft.restoreFactoryDefaults();
     shooterRight.restoreFactoryDefaults();
     shooterLeft.setInverted(true);
@@ -37,16 +37,34 @@ public class Shooter extends SubsystemBase {
       shooterRight.set(1);
     });
   }
+  public Command autoShooter() {
+    return run(() -> {
+      shooterLeft.set(1);
+      shooterRight.set(1);
+    }).withTimeout(.2);
+  }
+  public Command stopShooter() {
+    return run(() -> {
+      shooterLeft.set(0);
+      shooterRight.set(0);
+    }).withTimeout(.2);
+  }
   public Command reverseShooter() {
     return run(() -> {
       shooterLeft.set(-1);
       shooterRight.set(-1);
     });
   }
+   public Command trapShoot() {
+    return run(() -> {
+      shooterLeft.set(.85);
+      shooterRight.set(.85);
+    });
+  }
   public Command slowedShooter() {
     return run(() -> {
-      shooterLeft.set(.2);
-      shooterRight.set(.2);
+      shooterLeft.set(.03);
+      shooterRight.set(.30);
     });
   }
   public Command idleShooter() {

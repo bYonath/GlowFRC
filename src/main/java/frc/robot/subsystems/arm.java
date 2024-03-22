@@ -22,14 +22,15 @@ public class arm extends SubsystemBase {
     
     arm = new WPI_VictorSPX(11); 
     arm2 = new WPI_VictorSPX(12);
-    arm.setInverted(true);
+    arm.setInverted(false);
     arm2.setInverted(true);
-    SmartDashboard.putNumber("Left encoder value meteres", leftEncoderPosition());
+    SmartDashboard.putNumber("Left encoder value meteres", armEncoderPosition());
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    // System.out.println(enDC.getAbsolutePosition());
   }
   public Command idleArm(){
     return run(() -> {
@@ -37,16 +38,16 @@ public class arm extends SubsystemBase {
       arm2.set(0);
     });
   }
-  public static double leftEncoderPosition(){
+  public static double armEncoderPosition(){
     return enDC.getAbsolutePosition();
   }
   public Command armUp() {
     System.out.println("Endc Connected?:" + enDC.isConnected());
     System.out.println("ENDC Distance: " + enDC.getAbsolutePosition());
       return run(() -> {
-        if(enDC.getAbsolutePosition() < .8 && enDC.getAbsolutePosition() > -1){
-          arm.set(0.5);
-          arm2.set(.5);
+        if(enDC.getAbsolutePosition() < 2 && enDC.getAbsolutePosition() > -1){
+          arm.set(-0.5);
+          arm2.set(-0.5);
         System.out.println(enDC.getAbsolutePosition());
         } else {
           arm.set(0);
@@ -56,8 +57,8 @@ public class arm extends SubsystemBase {
   }
   public Command armDown(){
     return run(() -> {
-      arm.set(-0.5);
-      arm2.set(-0.5);
+      arm.set(1);
+      arm2.set(1);
     });
   }
 }

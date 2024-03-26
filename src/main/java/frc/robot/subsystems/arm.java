@@ -16,7 +16,6 @@ import frc.robot.Robot;
 public class arm extends SubsystemBase {
   WPI_VictorSPX arm;
   WPI_VictorSPX arm2;
-  public static DutyCycleEncoder enDC = new DutyCycleEncoder(OperatorConstants.dutyCycleEncoderPort);
   /** Creates a new arm. */
   public arm() {
     
@@ -24,7 +23,6 @@ public class arm extends SubsystemBase {
     arm2 = new WPI_VictorSPX(12);
     arm.setInverted(false);
     arm2.setInverted(true);
-    SmartDashboard.putNumber("Left encoder value meteres", armEncoderPosition());
   }
 
   @Override
@@ -38,27 +36,16 @@ public class arm extends SubsystemBase {
       arm2.set(0);
     });
   }
-  public static double armEncoderPosition(){
-    return enDC.getAbsolutePosition();
-  }
   public Command armUp() {
-    System.out.println("Endc Connected?:" + enDC.isConnected());
-    System.out.println("ENDC Distance: " + enDC.getAbsolutePosition());
       return run(() -> {
-        if(enDC.getAbsolutePosition() < 2 && enDC.getAbsolutePosition() > -1){
-          arm.set(-0.5);
-          arm2.set(-0.5);
-        System.out.println(enDC.getAbsolutePosition());
-        } else {
-          arm.set(0);
-          arm2.set(0);
-        }
+          arm.set(0); // Old value is -0.5 currently not using arm.
+          arm2.set(0); // Old value is -0.5 currently not using arm.
     });
   }
   public Command armDown(){
     return run(() -> {
-      arm.set(1);
-      arm2.set(1);
+      arm.set(0); // Old value is 1, currently not using arm.
+      arm2.set(0); // Old value is 1, currently not using arm.
     });
   }
 }

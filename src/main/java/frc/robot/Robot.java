@@ -48,13 +48,13 @@ public class Robot extends TimedRobot {
   private final Color k_orange = new Color(.3333333333333333, 0.4470588235294118, 0.21568627450980393);
   private final LEDController led_controller = new LEDController();
   private final XboxController xb1 = new XboxController(OperatorConstants.kDriverControllerPort);
-  private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
-  private static final String m_defaultAuto = "Default";
+  private static final String m_defaultAuto = "Straight 2 note";
+  private static final String m_autoTwo = "One note auto, no move";
+  private static final String m_autoThree = "One note auto, drive forward for A stop";
   private String m_autoSelected;
   private final Auton auto = new Auton();
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
-  private final SendableChooser<String> color_chooser = new SendableChooser<>();
   public int i = 0;
   public arm enc = new arm();
   private final DT m_drive = new DT();
@@ -69,24 +69,24 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-
-    System.out.println("Encoder Connected?: " + arm.enDC.isConnected());
-    m_chooser.setDefaultOption("Default Auto", m_defaultAuto);
-    SmartDashboard.putData("Auto choices", m_chooser);
-    // color_chooser.("Rainbow", led_controller.Rainbow());
-    SmartDashboard.putData("LED Choice", color_chooser);
+    // Starts a new Automatic Capture for our USB camera.
     CameraServer.startAutomaticCapture();
+
+    // Adds a new chooser so that we can select our Auton.
+    SmartDashboard.putData("Auto choices", m_chooser);
+    m_chooser.setDefaultOption("Straight 2 note", m_defaultAuto);
+    m_chooser.addOption("One note, no movement", m_autoTwo);
+    m_chooser.addOption("One note, drive forward for A-stop", m_autoThree);
+
+    // Initializes a new robot container.
     m_robotContainer = new RobotContainer();
-    System.out.println("Robot Initialized current LED color: " + led_controller.getColor());
-    // Adds orange as a potential color to match.
-    m_colorMatcher.addColorMatch(k_orange);
-    // Sets the led controller to the rainbow color pattern.
-    led_controller.Green();
+
     // Forwards all ports 5800 -> 5807 so that we can connect to our limelight over
     // usb coonnection to roboRio.
     for (int port = 5800; port <= 5807; port++) {
       PortForwarder.add(port, "limelight.local", port);
     }
+
   }
 
   /**
@@ -109,32 +109,12 @@ public class Robot extends TimedRobot {
     // robot's periodic
     // block in order for anything in the Command-based framework to work.
 
-    // Gets the current detected color and checks if the color matches orange.
-    // If the color matches orange switches our led strips color to green, else it will change the color to red.
-    // Color detectedColor = cSens.getColor();
-    // ColorMatchResult match = m_colorMatcher.matchClosestColor(detectedColor);
-    // String current_color = "";
-    // if (match.color == k_orange && !current_color.equals("orange")) {
-    //   led_controller.Green();
-    //   current_color = "orange";
-    //   System.out.println("Color is orange");
-    // } else if(current_color == "" && match.color != k_orange){
-    //   System.out.println("Color is not orange");
-    //   led_controller.set(0.61);
-    //   current_color = "";
-    // }
-        // System.out.println(match.color);
-      if(i == 0){
-        led_controller.Green();
-        i++;
-      }
     CommandScheduler.getInstance().run();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
-    led_controller.Rainbow();
   }
 
   @Override
@@ -147,17 +127,24 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    // m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-    // m_autoSelected = m_chooser.getSelected();
-    // System.out.println("Auto selected: " + m_autoSelected);
-    // m_autonomousCommand = m_robot.getAutonomousCommand();
 
+    // Getting the autonomous selection chosen
+    m_autoSelected = m_chooser.getSelected();
+    System.out.println("Auto selected: " + m_autoSelected);
     
-    // During auton sets our led strip to rainbow.
-    // led_controller.Rainbow();
-    // schedule the autonomous command (example)
-    if (auto.tempAuton(m_drive, m_robotContainer.m_shooter, m_robotContainer.m_feeder, m_robotContainer.m_intake) != null) {
-      auto.tempAuton(m_drive, m_robotContainer.m_shooter, m_robotContainer.m_feeder, m_robotContainer.m_intake).schedule();
+    // Here we check if the auton selected is our default auton and then if it is we schedule our default auton.
+    if(m_autoSelected == m_defaultAuto){
+        if (auto.defaultAuton(m_drive, m_robotContainer.m_shooter, m_robotContainer.m_feeder, m_robotContainer.m_intake) != null) {
+      auto.defaultAuton(m_drive, m_robotContainer.m_shooter, m_robotContainer.m_feeder, m_robotContainer.m_intake).schedule();
+        }
+    } else if(m_autoSelected == m_autoTwo){
+        if (auto.autonTwo(m_drive, m_robotContainer.m_shooter, m_robotContainer.m_feeder, m_robotContainer.m_intake) != null) {
+      auto.autonTwo(m_drive, m_robotContainer.m_shooter, m_robotContainer.m_feeder, m_robotContainer.m_intake).schedule();
+        }
+    } else if(m_autoSelected == m_autoTwo){
+      if (auto.autonThree(m_drive, m_robotContainer.m_shooter, m_robotContainer.m_feeder, m_robotContainer.m_intake) != null) {
+      auto.autonThree(m_drive, m_robotContainer.m_shooter, m_robotContainer.m_feeder, m_robotContainer.m_intake).schedule();
+        }
     }
   }
 
@@ -172,8 +159,19 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-    if (auto.tempAuton(m_drive, m_robotContainer.m_shooter, m_robotContainer.m_feeder, m_robotContainer.m_intake) != null) {
-      auto.tempAuton(m_drive, m_robotContainer.m_shooter, m_robotContainer.m_feeder, m_robotContainer.m_intake).cancel();
+     m_autoSelected = m_chooser.getSelected();
+    if(m_autoSelected == m_defaultAuto){
+        if (auto.defaultAuton(m_drive, m_robotContainer.m_shooter, m_robotContainer.m_feeder, m_robotContainer.m_intake) != null) {
+      auto.defaultAuton(m_drive, m_robotContainer.m_shooter, m_robotContainer.m_feeder, m_robotContainer.m_intake).cancel();
+        }
+    } else if(m_autoSelected == m_autoTwo){
+        if (auto.autonTwo(m_drive, m_robotContainer.m_shooter, m_robotContainer.m_feeder, m_robotContainer.m_intake) != null) {
+      auto.autonTwo(m_drive, m_robotContainer.m_shooter, m_robotContainer.m_feeder, m_robotContainer.m_intake).cancel();
+        }
+    } else if(m_autoSelected == m_autoTwo){
+      if (auto.autonThree(m_drive, m_robotContainer.m_shooter, m_robotContainer.m_feeder, m_robotContainer.m_intake) != null) {
+      auto.autonThree(m_drive, m_robotContainer.m_shooter, m_robotContainer.m_feeder, m_robotContainer.m_intake).cancel();
+        }
     }
   }
 

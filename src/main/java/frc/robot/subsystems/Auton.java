@@ -33,16 +33,32 @@ public class Auton extends SubsystemBase {
   }
 
 
-  public Command tempAuton(DT dt, Shooter shoot, Feeder feed, Intake in) {
+  public Command defaultAuton(DT dt, Shooter shoot, Feeder feed, Intake in) {
     return Commands.sequence(
       // shooter shooter,
       shoot.autoShooter().alongWith(feed.autoFeeder()),
       shoot.stopShooter(),
       dt.driveForward().alongWith(in.autoIntake()),
       dt.stop(),
-      
       dt.driveBackwards(),
       shoot.autoShooter().alongWith(in.autoIntake())
+      );
+  }
+   public Command autonTwo(DT dt, Shooter shoot, Feeder feed, Intake in) {
+    return Commands.sequence(
+      // shooter shooter,
+      shoot.autoShooter().alongWith(feed.autoFeeder()),
+      shoot.stopShooter()
+      );
+  }
+  public Command autonThree(DT dt, Shooter shoot, Feeder feed, Intake in) {
+    return Commands.sequence(
+      // shooter shooter,
+      shoot.autoShooter().alongWith(feed.autoFeeder()),
+      shoot.stopShooter(),
+      dt.driveForward(),
+      dt.driveForward(),
+      dt.driveForward()
       );
   }
 

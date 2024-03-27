@@ -65,9 +65,9 @@ public class DT extends SubsystemBase {
   
   public DT() {
     // Initializes all the motors. 
-    frontRight = new WPI_VictorSPX(7);
+    backRight = new WPI_VictorSPX(7);
     frontLeft = new WPI_VictorSPX(1);
-    backRight = new WPI_VictorSPX(2);
+    frontRight = new WPI_VictorSPX(2);
     backLeft = new WPI_VictorSPX(3);
     // leftEncoder = new Encoder(OperatorConstants.leftEncoder[1], OperatorConstants.leftEncoder[2]);
     // rightEncoder = new Encoder(OperatorConstants.rightEncoder[1], OperatorConstants.rightEncoder[2]);
@@ -183,7 +183,7 @@ public class DT extends SubsystemBase {
 
     // Using the tankDrive (or arcadeDrive) method of the driveTrain class and flipping the right side inputs to fit driver's tastes and have both sides move the same way
     //driveTrain.tankDrive(xb1.getRightY() * -1, xb1.getLeftY());
-    m_drive.arcadeDrive(xb1.getRightX(), xb1.getLeftY());
+    m_drive.arcadeDrive(xb1.getLeftY(), (-1 * xb1.getRightX()));
     // m_odometry.update(m_gyro.getRotation2d(), leftEncoder.getDistance(), rightEncoder.getDistance());
   }
 }

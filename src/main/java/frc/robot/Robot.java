@@ -16,6 +16,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.Constants;
+import edu.wpi.first.wpilibj.AddressableLED;
+import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 // import frc.robot.subsystems.Encoder;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.I2C;
@@ -25,7 +27,6 @@ import frc.robot.subsystems.Auton;
 import frc.robot.subsystems.DT;
 import frc.robot.subsystems.LEDController;
 import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.arm;
 
 // import com.revrobotics.ColorSensorV3;
 import com.revrobotics.ColorMatchResult;
@@ -56,7 +57,6 @@ public class Robot extends TimedRobot {
   private final Auton auto = new Auton();
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
   public int i = 0;
-  public arm enc = new arm();
   private final DT m_drive = new DT();
   // private final SysIdRoutineBot m_robot = new SysIdRoutineBot();
   // Initializes the xbox controller and statically references the port from
@@ -71,7 +71,6 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Starts a new Automatic Capture for our USB camera.
     CameraServer.startAutomaticCapture();
-
     // Adds a new chooser so that we can select our Auton.
     SmartDashboard.putData("Auto choices", m_chooser);
     m_chooser.setDefaultOption("Straight 2 note", m_defaultAuto);
@@ -86,7 +85,7 @@ public class Robot extends TimedRobot {
     for (int port = 5800; port <= 5807; port++) {
       PortForwarder.add(port, "limelight.local", port);
     }
-
+    
   }
 
   /**
@@ -141,7 +140,7 @@ public class Robot extends TimedRobot {
         if (auto.autonTwo(m_drive, m_robotContainer.m_shooter, m_robotContainer.m_feeder, m_robotContainer.m_intake) != null) {
       auto.autonTwo(m_drive, m_robotContainer.m_shooter, m_robotContainer.m_feeder, m_robotContainer.m_intake).schedule();
         }
-    } else if(m_autoSelected == m_autoTwo){
+    } else if(m_autoSelected == m_autoThree){
       if (auto.autonThree(m_drive, m_robotContainer.m_shooter, m_robotContainer.m_feeder, m_robotContainer.m_intake) != null) {
       auto.autonThree(m_drive, m_robotContainer.m_shooter, m_robotContainer.m_feeder, m_robotContainer.m_intake).schedule();
         }
@@ -160,6 +159,7 @@ public class Robot extends TimedRobot {
     // continue until interrupted by another command, remove
     // this line or comment it out.
      m_autoSelected = m_chooser.getSelected();
+   
     if(m_autoSelected == m_defaultAuto){
         if (auto.defaultAuton(m_drive, m_robotContainer.m_shooter, m_robotContainer.m_feeder, m_robotContainer.m_intake) != null) {
       auto.defaultAuton(m_drive, m_robotContainer.m_shooter, m_robotContainer.m_feeder, m_robotContainer.m_intake).cancel();
@@ -168,7 +168,7 @@ public class Robot extends TimedRobot {
         if (auto.autonTwo(m_drive, m_robotContainer.m_shooter, m_robotContainer.m_feeder, m_robotContainer.m_intake) != null) {
       auto.autonTwo(m_drive, m_robotContainer.m_shooter, m_robotContainer.m_feeder, m_robotContainer.m_intake).cancel();
         }
-    } else if(m_autoSelected == m_autoTwo){
+    } else if(m_autoSelected == m_autoThree){
       if (auto.autonThree(m_drive, m_robotContainer.m_shooter, m_robotContainer.m_feeder, m_robotContainer.m_intake) != null) {
       auto.autonThree(m_drive, m_robotContainer.m_shooter, m_robotContainer.m_feeder, m_robotContainer.m_intake).cancel();
         }

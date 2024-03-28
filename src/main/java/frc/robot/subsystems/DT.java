@@ -159,8 +159,13 @@ public class DT extends SubsystemBase {
   // }
   public Command driveForward(){
     return run(() -> {
-     m_drive.tankDrive(-1, 1);
-    }).withTimeout(.75);
+     m_drive.arcadeDrive(1, 0);
+    }).withTimeout(.77);
+  }
+  public Command driveIndefinitely(){
+    return run(() -> {
+     m_drive.arcadeDrive(1, 0);
+    });
   }
   public Command stop(){
     return run(() -> {
@@ -169,8 +174,8 @@ public class DT extends SubsystemBase {
   }
   public Command driveBackwards(){
     return run(() -> {
-       m_drive.tankDrive(1, -1);
-    }).withTimeout(.7);
+       m_drive.arcadeDrive(-1, 0);
+    }).withTimeout(.8);
   } 
   public Command waitUntil(){
     return run(() -> {
@@ -183,7 +188,7 @@ public class DT extends SubsystemBase {
 
     // Using the tankDrive (or arcadeDrive) method of the driveTrain class and flipping the right side inputs to fit driver's tastes and have both sides move the same way
     //driveTrain.tankDrive(xb1.getRightY() * -1, xb1.getLeftY());
-    m_drive.arcadeDrive(xb1.getLeftY(), (-1 * xb1.getRightX()));
+    m_drive.arcadeDrive(xb1.getLeftY(), (xb1.getRightX()));
     // m_odometry.update(m_gyro.getRotation2d(), leftEncoder.getDistance(), rightEncoder.getDistance());
   }
 }

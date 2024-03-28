@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 public class Auton extends SubsystemBase {
   /** Creates a new Auton. */
   // private final LimeLight lml = new LimeLight();
-  private final arm A = new arm();
   private final DT drive = new DT();
   private final Intake intake = new Intake();
   private final Timer time = new Timer();
@@ -41,6 +40,7 @@ public class Auton extends SubsystemBase {
       dt.driveForward().alongWith(in.autoIntake()),
       dt.stop(),
       dt.driveBackwards(),
+      dt.stop(),
       shoot.autoShooter().alongWith(in.autoIntake())
       );
   }
@@ -56,13 +56,7 @@ public class Auton extends SubsystemBase {
       // shooter shooter,
       shoot.autoShooter().alongWith(feed.autoFeeder()),
       shoot.stopShooter(),
-      dt.driveForward(),
-      dt.driveForward(),
-      dt.driveForward()
+      dt.driveIndefinitely()
       );
-  }
-
-  public void adjustArm(){
-    
   }
 }

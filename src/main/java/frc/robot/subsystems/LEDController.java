@@ -11,7 +11,7 @@ public class LEDController extends SubsystemBase {
   /** Creates a new LEDController. */
   public Spark m_blinkin;
   public LEDController() {
-    m_blinkin = new Spark(1);
+    
   }
   // public void set(double val){
   //   if ((val >= -1.0) && (val <= 1.0)) {

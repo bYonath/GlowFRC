@@ -5,13 +5,12 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.subsystems.arm;
+import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.DT;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LEDController;
 import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.arm;
 
 import java.io.IOException;
 import java.nio.file.FileSystem;
@@ -46,8 +45,8 @@ public class RobotContainer {
   public final Intake m_intake = new Intake();
   public final Shooter m_shooter = new Shooter();
   public final Feeder m_feeder = new Feeder();
-  private final arm m_arm = new arm();
   private final DT m_drive = new DT();
+  private final Climb m_climb = new Climb();
   // private final LEDController m_led_controller = new LEDController(0);
 
 
@@ -61,7 +60,7 @@ public class RobotContainer {
     m_intake.setDefaultCommand(m_intake.idleIntake());
     m_shooter.setDefaultCommand(m_shooter.idleShooter());
     m_feeder.setDefaultCommand(m_feeder.idleFeeder());
-    m_arm.setDefaultCommand(m_arm.idleArm());
+    m_climb.setDefaultCommand(m_climb.climbIdle());
     // m_drive.setDefaultCommand(m_drive.arcadeDriveCommand(m_driverController.getRightX(), m_driverController.getLeftY()));
   }
 
@@ -103,11 +102,10 @@ public class RobotContainer {
     m_driverController.leftTrigger().whileTrue(m_intake.reverseIntake().alongWith(m_feeder.reverseFeeder()));
     m_driverController.rightBumper().whileTrue(m_shooter.runShooter());
     m_driverController.rightTrigger().whileTrue(m_shooter.reverseShooter().alongWith(m_feeder.reverseFeeder()));
-    m_driverController.povUp().whileTrue(m_arm.armUp());
-    m_driverController.povDown().whileTrue(m_arm.armDown());
     m_driverController.a().whileTrue(m_shooter.slowedShooter());
     m_driverController.x().whileTrue(m_shooter.trapShoot());
-    // m_driverController.b().onTrue(m_drive.driveForward());
+    m_driverController.povUp().whileTrue(m_climb.climbRaise());
+    m_driverController.povDown().whileTrue(m_climb.climbLower());
   }
 
   /**

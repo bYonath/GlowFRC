@@ -72,6 +72,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Starts a new Automatic Capture for our USB camera.
     CameraServer.startAutomaticCapture();
+    CameraServer.startAutomaticCapture(2);
     // Adds a new chooser so that we can select our Auton.
     SmartDashboard.putData("Auto choices", m_chooser);
     m_chooser.setDefaultOption("Straight 2 note", m_defaultAuto);

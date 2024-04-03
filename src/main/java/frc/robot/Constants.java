@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Encoder;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -17,10 +19,11 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
     public static final int kSecondControllerPort = 1;
     public static final int dutyCycleEncoderPort = 7;
-    public static final int[] leftEncoder = new int[]{1, 2};
-    public static final int[] rightEncoder = new int[]{3, 4};
+    public static final int[] leftEncoder = new int[]{0, 2};
+    public static final int[] rightEncoder = new int[]{5, 6};
   }
   public static class SysIdConstants {
-    
+  public static final Encoder leftEncoder = new Encoder(OperatorConstants.leftEncoder[0], OperatorConstants.leftEncoder[1]);
+  public static final Encoder rightEncoder = new Encoder(OperatorConstants.rightEncoder[0], OperatorConstants.rightEncoder[1]);
   }
 }

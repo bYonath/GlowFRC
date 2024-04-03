@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.DriverStation;
 // import frc.robot.subsystems.Encoder;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.I2C;

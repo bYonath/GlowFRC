@@ -17,10 +17,11 @@ public class Climb extends SubsystemBase {
   public Climb() {
     m_climbOne.restoreFactoryDefaults();
     m_climbTwo.restoreFactoryDefaults();
-    m_climbOne.setInverted(true);
+    m_climbOne.setInverted(false);
     m_climbTwo.setInverted(false);
     m_climbOne.burnFlash();
     m_climbTwo.burnFlash();
+    m_climbOne.follow(m_climbTwo);
   }
 
   @Override

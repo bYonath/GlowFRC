@@ -15,6 +15,7 @@ package frc.robot;
 public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
+    public static final int kSecondControllerPort = 1;
     public static final int dutyCycleEncoderPort = 7;
     public static final int[] leftEncoder = new int[]{1, 2};
     public static final int[] rightEncoder = new int[]{3, 4};

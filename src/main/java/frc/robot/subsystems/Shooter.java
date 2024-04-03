@@ -57,8 +57,8 @@ public class Shooter extends SubsystemBase {
   }
    public Command trapShoot() {
     return run(() -> {
-      shooterLeft.set(.85);
-      shooterRight.set(.85);
+      shooterLeft.set(.7);
+      shooterRight.set(.75);
     });
   }
   public Command slowedShooter() {

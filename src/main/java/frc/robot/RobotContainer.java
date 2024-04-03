@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import com.pathplanner.lib.auto.NamedCommands;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -53,9 +54,15 @@ public class RobotContainer {
   //  Creates a CommandXboxController //Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
       new CommandXboxController(OperatorConstants.kDriverControllerPort);
+   private final CommandXboxController m_secondController =
+      new CommandXboxController(OperatorConstants.kSecondControllerPort);
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
+    NamedCommands.registerCommand("Run Shooter", m_shooter.autoShooter());
+    NamedCommands.registerCommand("Run Intake", m_intake.autoIntake());
+    NamedCommands.registerCommand("Run Feeder", m_feeder.autoFeeder());
+    
     configureBindings();
     m_intake.setDefaultCommand(m_intake.idleIntake());
     m_shooter.setDefaultCommand(m_shooter.idleShooter());
@@ -101,11 +108,11 @@ public class RobotContainer {
     m_driverController.leftBumper().whileTrue(m_intake.runIntake().alongWith(m_feeder.runFeeder()));
     m_driverController.leftTrigger().whileTrue(m_intake.reverseIntake().alongWith(m_feeder.reverseFeeder()));
     m_driverController.rightBumper().whileTrue(m_shooter.runShooter());
-    m_driverController.rightTrigger().whileTrue(m_shooter.reverseShooter().alongWith(m_feeder.reverseFeeder()));
+    m_driverController.y().whileTrue(m_shooter.reverseShooter().alongWith(m_feeder.reverseFeeder()));
     m_driverController.a().whileTrue(m_shooter.slowedShooter());
     m_driverController.x().whileTrue(m_shooter.trapShoot());
-    m_driverController.povUp().whileTrue(m_climb.climbRaise());
-    m_driverController.povDown().whileTrue(m_climb.climbLower());
+    m_secondController.y().whileTrue(m_climb.climbRaise());
+    m_secondController.a().whileTrue(m_climb.climbLower());
   }
 
   /**

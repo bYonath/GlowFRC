@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
@@ -49,7 +50,7 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import frc.robot.Constants;
 public class DT extends SubsystemBase {
   public DifferentialDrive m_drive;
-  private CommandXboxController xb1 = new CommandXboxController(0);
+  private CommandPS4Controller ps1 = new CommandPS4Controller(0);
   public WPI_VictorSPX frontRight;
   public WPI_VictorSPX frontLeft;
   public WPI_VictorSPX backRight;
@@ -57,7 +58,8 @@ public class DT extends SubsystemBase {
   public WPI_VictorSPX transferMotor;
   public Encoder leftEncoder = SysIdConstants.leftEncoder;
   public Encoder rightEncoder = SysIdConstants.rightEncoder;
-  private final ADXRS450_Gyro m_gyro = new ADXRS450_Gyro(SPI.Port.kOnboardCS1);
+  ADXRS450_Gyro m_gyro = SysIdConstants.m_gyro;
+  private int i = 0;
   private final DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(
       m_gyro.getRotation2d(), leftEncoder.getDistance(), rightEncoder.getDistance()
     );
@@ -128,6 +130,8 @@ public class DT extends SubsystemBase {
     // Initializes the drive train as a new instance of the DifferentialDrive class
     Shuffleboard.getTab("SYSID DT ROUTINE");
     // Shuffleboard.getTab("ODOMETRY").add("Od", m_gyro.getRotation2d());
+    System.out.println("Is the gyro connected?: " + m_gyro.isConnected());
+  
     m_drive = new DifferentialDrive(
       (double output) -> {
         frontLeft.set(output);
@@ -190,10 +194,10 @@ public class DT extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-
+    System.out.println(m_gyro.getRotation2d());
     // Using the tankDrive (or arcadeDrive) method of the driveTrain class and flipping the right side inputs to fit driver's tastes and have both sides move the same way
-    //driveTrain.tankDrive(xb1.getRightY() * -1, xb1.getLeftY());
-    m_drive.arcadeDrive(xb1.getLeftY(), (xb1.getRightX()));
-    m_odometry.update(m_gyro.getRotation2d(), leftEncoder.getDistance(), rightEncoder.getDistance());
+    //driveTrain.tankDrive(ps1.getRightY() * -1, ps1.getLeftY());
+    m_drive.arcadeDrive(ps1.getLeftY(), (ps1.getRightX()));
+    // m_odometry.update(m_gyro.getRotation2d(), leftEncoder.getDistance(), rightEncoder.getDistance());
   }
 }

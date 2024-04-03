@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.Encoder;
 
 /**
@@ -23,6 +24,7 @@ public final class Constants {
     public static final int[] rightEncoder = new int[]{5, 6};
   }
   public static class SysIdConstants {
+  public static final ADXRS450_Gyro m_gyro = new ADXRS450_Gyro();
   public static final Encoder leftEncoder = new Encoder(OperatorConstants.leftEncoder[0], OperatorConstants.leftEncoder[1]);
   public static final Encoder rightEncoder = new Encoder(OperatorConstants.rightEncoder[0], OperatorConstants.rightEncoder[1]);
   }

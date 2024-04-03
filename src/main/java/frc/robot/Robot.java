@@ -54,6 +54,7 @@ public class Robot extends TimedRobot {
   private static final String m_defaultAuto = "Straight 2 note";
   private static final String m_autoTwo = "One note auto, no move";
   private static final String m_autoThree = "One note auto, drive forward for A stop";
+  private static final String m_autoFour = "SYSID Auto";
   private String m_autoSelected;
   private final Auton auto = new Auton();
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
@@ -72,16 +73,14 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Starts a new Automatic Capture for our USB camera.
     CameraServer.startAutomaticCapture();
-    CameraServer.startAutomaticCapture(2);
     // Adds a new chooser so that we can select our Auton.
     SmartDashboard.putData("Auto choices", m_chooser);
     m_chooser.setDefaultOption("Straight 2 note", m_defaultAuto);
     m_chooser.addOption("One note, no movement", m_autoTwo);
     m_chooser.addOption("One note, drive forward for A-stop", m_autoThree);
-
+    m_chooser.addOption("SysID Routine", m_autoFour);
     // Initializes a new robot container.
     m_robotContainer = new RobotContainer();
-
     // Forwards all ports 5800 -> 5807 so that we can connect to our limelight over
     // usb coonnection to roboRio.
     for (int port = 5800; port <= 5807; port++) {

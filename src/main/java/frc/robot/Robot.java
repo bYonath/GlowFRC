@@ -7,32 +7,32 @@ package frc.robot;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj2.command.Command;
+//import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import com.ctre.phoenix6.*;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+//import com.ctre.phoenix6.*;
+//import edu.wpi.first.wpilibj.XboxController;
+//import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.util.Color;
-import frc.robot.Constants;
-import edu.wpi.first.wpilibj.AddressableLED;
-import edu.wpi.first.wpilibj.AddressableLEDBuffer;
-import edu.wpi.first.wpilibj.DriverStation;
+//import edu.wpi.first.wpilibj.util.Color;
+//import frc.robot.Constants;
+//import edu.wpi.first.wpilibj.AddressableLED;
+//import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+//import edu.wpi.first.wpilibj.DriverStation;
 // import frc.robot.subsystems.Encoder;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.util.Color;
-import frc.robot.Constants.OperatorConstants;
+//import edu.wpi.first.wpilibj.DutyCycleEncoder;
+//import edu.wpi.first.wpilibj.I2C;
+//import edu.wpi.first.wpilibj.util.Color;
+//import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.Auton;
 import frc.robot.subsystems.DT;
-import frc.robot.subsystems.LEDController;
-import frc.robot.subsystems.Shooter;
+//import frc.robot.subsystems.LEDController;
+//import frc.robot.subsystems.Shooter;
 
 // import com.revrobotics.ColorSensorV3;
-import com.revrobotics.ColorMatchResult;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import com.revrobotics.ColorMatch;
+//import com.revrobotics.ColorMatchResult;
+//import edu.wpi.first.wpilibj.DutyCycleEncoder;
+//import com.revrobotics.ColorMatch;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -43,13 +43,19 @@ import com.revrobotics.ColorMatch;
  * build.gradle file in the
  * project.
  */
+
+ // why is this a timed robot skeleton?
 public class Robot extends TimedRobot {
-  private final I2C.Port i2cPort = I2C.Port.kOnboard;
-  // private final ColorSensorV3 cSens = new ColorSensorV3(i2cPort);
-  private final ColorMatch m_colorMatcher = new ColorMatch();
-  private final Color k_orange = new Color(.3333333333333333, 0.4470588235294118, 0.21568627450980393);
-  private final LEDController led_controller = new LEDController();
-  private final XboxController xb1 = new XboxController(OperatorConstants.kDriverControllerPort);
+
+  // The imports/declarations that are not used have been commented out
+
+  //private final I2C.Port i2cPort = I2C.Port.kOnboard;
+  //private final ColorSensorV3 cSens = new ColorSensorV3(i2cPort);
+  //private final ColorMatch m_colorMatcher = new ColorMatch();
+  //private final Color k_orange = new Color(.3333333333333333, 0.4470588235294118, 0.21568627450980393);
+  //private final LEDController led_controller = new LEDController();
+  //private final XboxController xb1 = new XboxController(OperatorConstants.kDriverControllerPort);
+
   private RobotContainer m_robotContainer;
   private static final String m_defaultAuto = "Straight 2 note";
   private static final String m_autoTwo = "One note auto, no move";

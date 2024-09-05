@@ -6,22 +6,21 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+//import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
+//import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants;
-import frc.robot.Constants.OperatorConstants;
+//import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+//import edu.wpi.first.wpilibj2.command.button.Trigger;
+//import frc.robot.Constants;
+//import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.SysIdConstants;
 
-import java.util.function.DoubleSupplier;
+//import java.util.function.DoubleSupplier;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkLowLevel.MotorType;
+// Old Motor Controller
+//import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
@@ -31,35 +30,62 @@ import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
-import edu.wpi.first.wpilibj.DutyCycle;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
+//import edu.wpi.first.wpilibj.CAN;
+//import edu.wpi.first.wpilibj.DutyCycle;
+//import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.XboxController;
+//import edu.wpi.first.wpilibj.SPI;
+//import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import static edu.wpi.first.units.Units.Volts;
-import edu.wpi.first.units.Distance;
+
+//import java.net.CacheRequest;
+
+//import javax.print.CancelablePrintJob;
+
+//import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.MutableMeasure;
-import edu.wpi.first.units.Velocity;
-import edu.wpi.first.units.Voltage;
+//import edu.wpi.first.units.MutableMeasure;
+//import edu.wpi.first.units.Velocity;
+//import edu.wpi.first.units.Voltage;
 import static edu.wpi.first.units.MutableMeasure.mutable;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
-import frc.robot.Constants;
+//import frc.robot.Constants;
+
+// Experimental Imports for CanSparkMax?
+// It seems as if the Neos may still work with victors?
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+
 public class DT extends SubsystemBase {
+
   public DifferentialDrive m_drive;
   private CommandPS4Controller ps1 = new CommandPS4Controller(0);
+
+  // Motor Declarations
+  public CANSparkMax frontRight;
+  public CANSparkMax frontLeft;
+  public CANSparkMax backRight;
+  public CANSparkMax backLeft;
+  public CANSparkMax transferMotor;
+
+  // Older Motor Declarations
+  /*
   public WPI_VictorSPX frontRight;
   public WPI_VictorSPX frontLeft;
   public WPI_VictorSPX backRight;
   public WPI_VictorSPX backLeft;
   public WPI_VictorSPX transferMotor;
+  */
   public Encoder leftEncoder = SysIdConstants.leftEncoder;
   public Encoder rightEncoder = SysIdConstants.rightEncoder;
+
   ADXRS450_Gyro m_gyro = SysIdConstants.m_gyro;
-  private int i = 0;
+
+  //private int i = 0;
+
   private final DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(
       m_gyro.getRotation2d(), leftEncoder.getDistance(), rightEncoder.getDistance()
     );
@@ -122,11 +148,20 @@ public class DT extends SubsystemBase {
               // WPILog with this subsystem's name ("drive")
               this));
   public DT() {
-    // Initializes all the motors. 
+    // Initializes all the motors.
+    /*
     backRight = new WPI_VictorSPX(7);
     frontLeft = new WPI_VictorSPX(1);
     frontRight = new WPI_VictorSPX(2);
-    backLeft = new WPI_VictorSPX(3);    
+    backLeft = new WPI_VictorSPX(3);
+    */
+    
+    // Theoretical Code for Neo motors?
+    backRight = new CANSparkMax(7, MotorType.kBrushless);
+    frontLeft = new CANSparkMax(1, MotorType.kBrushless);
+    frontRight = new CANSparkMax(2, MotorType.kBrushless);
+    backLeft = new CANSparkMax(3, MotorType.kBrushless);
+
     // Initializes the drive train as a new instance of the DifferentialDrive class
     Shuffleboard.getTab("SYSID DT ROUTINE");
     // Shuffleboard.getTab("ODOMETRY").add("Od", m_gyro.getRotation2d());

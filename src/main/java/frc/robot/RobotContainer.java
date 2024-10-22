@@ -12,23 +12,6 @@ import frc.robot.subsystems.Intake;
 //import frc.robot.subsystems.LEDController;
 import frc.robot.subsystems.Shooter;
 
-//import java.io.IOException;
-//import java.nio.file.FileSystem;
-//import java.nio.file.Path;
-
-//import com.ctre.phoenix6.configs.FeedbackConfigs;
-
-//import edu.wpi.first.math.trajectory.TrajectoryUtil;
-//import edu.wpi.first.units.Distance;
-//import edu.wpi.first.units.MutableMeasure;
-//import edu.wpi.first.units.Velocity;
-//import edu.wpi.first.units.Voltage;
-//import edu.wpi.first.math.trajectory.Trajectory;
-//import edu.wpi.first.wpilibj.DriverStation;
-//import edu.wpi.first.wpilibj.Filesystem;
-//import edu.wpi.first.wpilibj2.command.Command;
-//import edu.wpi.first.wpilibj2.command.InstantCommand;
-//import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -40,24 +23,15 @@ import com.pathplanner.lib.auto.NamedCommands;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-  // private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-
-  //private final DT m_drivetrain = new DT();
   public final Intake m_intake = new Intake();
   public final Shooter m_shooter = new Shooter();
   public final Feeder m_feeder = new Feeder();
-  //private final DT m_drive = new DT();
   private final Climb m_climb = new Climb();
-  // private final LEDController m_led_controller = new LEDController(0);
-
 
   //  Creates a CommandXboxController //Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandPS4Controller m_driverController =
       new CommandPS4Controller(OperatorConstants.kDriverControllerPort);
-  //  private final CommandXboxController m_secondController =
-      // new CommandXboxController(OperatorConstants.kSecondControllerPort);
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+      
   public RobotContainer() {
     // Configure the trigger bindings
     NamedCommands.registerCommand("Run Shooter", m_shooter.autoShooter());
@@ -69,7 +43,7 @@ public class RobotContainer {
     m_shooter.setDefaultCommand(m_shooter.idleShooter());
     m_feeder.setDefaultCommand(m_feeder.idleFeeder());
     m_climb.setDefaultCommand(m_climb.climbIdle());
-    // m_drive.setDefaultCommand(m_drive.arcadeDriveCommand(m_driverController.getRightX(), m_driverController.getLeftY()));
+    //m_drive.setDefaultCommand(m_drive.arcadeDriveCommand(m_driverController.getRightX(), m_driverController.getLeftY()));
   }
 
   // public Command loadPathPlannerTrajectoryToRamseteCommand(String filename, boolean resetOdomtry){

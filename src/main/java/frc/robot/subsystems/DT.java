@@ -57,7 +57,9 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 // Experimental Imports for CanSparkMax?
 // It seems as if the Neos may still work with victors?
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.SparkAnalogSensor.Mode;
 
 public class DT extends SubsystemBase {
 
@@ -166,7 +168,8 @@ public class DT extends SubsystemBase {
     Shuffleboard.getTab("SYSID DT ROUTINE");
     // Shuffleboard.getTab("ODOMETRY").add("Od", m_gyro.getRotation2d());
     System.out.println("Is the gyro connected?: " + m_gyro.isConnected());
-  
+
+    /*
     m_drive = new DifferentialDrive(
       (double output) -> {
         frontLeft.set(output);
@@ -177,7 +180,32 @@ public class DT extends SubsystemBase {
         backRight.set(output);
     }
     );
+    */
+    
+    frontRight.setSmartCurrentLimit(80);
+    frontLeft.setSmartCurrentLimit(80);
+    backRight.setSmartCurrentLimit(80);
+    backLeft.setSmartCurrentLimit(80);
+
+    frontRight.setIdleMode(IdleMode.kCoast);
+    frontLeft.setIdleMode(IdleMode.kCoast);
+    backLeft.setIdleMode(IdleMode.kCoast);
+    backRight.setIdleMode(IdleMode.kCoast);
+
+    frontRight.burnFlash();
+    frontLeft.burnFlash();
+    backLeft.burnFlash();
+    backRight.burnFlash();
+
   }
+  
+  public void tankDrive(double rfOut, double lfOut, double rbOut, double lbOut){
+    frontRight.set(rfOut*2);
+    backRight.set(lfOut*2);
+    frontLeft.set(rbOut*2);
+    backLeft.set(lbOut*2);
+  }
+  
  
   public Pose2d getPos(){
     return m_odometry.getPoseMeters();
@@ -198,27 +226,31 @@ public class DT extends SubsystemBase {
   public Command arcadeDriveCommand(double a, double b) {
     // A split-stick arcade command, with forward/backward controlled by the left
     // hand, and turning controlled by the right.
-    return run(() -> m_drive.arcadeDrive(a, b))
+    return run(() -> tankDrive(a, a, b, b))
         .withName("arcadeDrive");
   }
   public Command driveForward(){
     return run(() -> {
-     m_drive.arcadeDrive(1, 0);
+     //m_drive.arcadeDrive(1, 0);
+     tankDrive(1, 1, 1, 1);
     }).withTimeout(.77);
   }
   public Command driveIndefinitely(){
     return run(() -> {
-     m_drive.arcadeDrive(1, 0);
+     //m_drive.arcadeDrive(1, 0);
+     tankDrive(1,1,1,1);
     });
   }
   public Command stop(){
     return run(() -> {
-     m_drive.tankDrive(0, 0);
+    //m_drive.tankDrive(0, 0);
+    tankDrive(0,0,0,0);
     }).withTimeout(.5);
   }
   public Command driveBackwards(){
     return run(() -> {
-       m_drive.arcadeDrive(-1, 0);
+      //m_drive.arcadeDrive(-1, 0);
+      tankDrive(-1,-1,-1,-1);
     }).withTimeout(.8);
   } 
   public Command waitUntil(){

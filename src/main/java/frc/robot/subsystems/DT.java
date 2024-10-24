@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 //import frc.robot.Constants;
 //import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.SysIdConstants;
+import edu.wpi.first.math.MathUtil;
 
 //import java.util.function.DoubleSupplier;
 
@@ -52,12 +53,13 @@ import edu.wpi.first.units.Measure;
 import static edu.wpi.first.units.MutableMeasure.mutable;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
-//import frc.robot.Constants;
+import frc.robot.Constants.MotorPorts;
 
-// Experimental Imports for CanSparkMax?
-// It seems as if the Neos may still work with victors?
+// Imports for motor controllers
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.SparkAnalogSensor.Mode;
 
 public class DT extends SubsystemBase {
 
@@ -70,15 +72,7 @@ public class DT extends SubsystemBase {
   public CANSparkMax backRight;
   public CANSparkMax backLeft;
   public CANSparkMax transferMotor;
-
-  // Older Motor Declarations
-  /*
-  public WPI_VictorSPX frontRight;
-  public WPI_VictorSPX frontLeft;
-  public WPI_VictorSPX backRight;
-  public WPI_VictorSPX backLeft;
-  public WPI_VictorSPX transferMotor;
-  */
+  // am i going insane?
   public Encoder leftEncoder = SysIdConstants.leftEncoder;
   public Encoder rightEncoder = SysIdConstants.rightEncoder;
 
@@ -157,16 +151,17 @@ public class DT extends SubsystemBase {
     */
     
     // Theoretical Code for Neo motors?
-    backRight = new CANSparkMax(7, MotorType.kBrushless);
-    frontLeft = new CANSparkMax(1, MotorType.kBrushless);
-    frontRight = new CANSparkMax(2, MotorType.kBrushless);
-    backLeft = new CANSparkMax(3, MotorType.kBrushless);
+    backRight = new CANSparkMax(MotorPorts.backRightPort, MotorType.kBrushless);
+    frontRight = new CANSparkMax(MotorPorts.frontRightPort, MotorType.kBrushless);
+    frontLeft = new CANSparkMax(MotorPorts.frontLeftPort, MotorType.kBrushless);
+    backLeft = new CANSparkMax(MotorPorts.backLeftPort, MotorType.kBrushless);
 
     // Initializes the drive train as a new instance of the DifferentialDrive class
     Shuffleboard.getTab("SYSID DT ROUTINE");
     // Shuffleboard.getTab("ODOMETRY").add("Od", m_gyro.getRotation2d());
     System.out.println("Is the gyro connected?: " + m_gyro.isConnected());
-  
+
+    /*
     m_drive = new DifferentialDrive(
       (double output) -> {
         frontLeft.set(output);
@@ -177,8 +172,37 @@ public class DT extends SubsystemBase {
         backRight.set(output);
     }
     );
+    */
+    
+    // Set current limit (to make sure the robot does not overheat)
+    frontRight.setSmartCurrentLimit(40);
+    frontLeft.setSmartCurrentLimit(40);
+    backRight.setSmartCurrentLimit(40);
+    backLeft.setSmartCurrentLimit(40);
+
+    // Set the idle mode (so the robot stays still)
+    frontRight.setIdleMode(IdleMode.kBrake);
+    frontLeft.setIdleMode(IdleMode.kBrake);
+    backLeft.setIdleMode(IdleMode.kBrake);
+    backRight.setIdleMode(IdleMode.kBrake);
+
+    // Inverts the motors (I somehow forgot this monday, i thought i put it in)
+    frontRight.setInverted(true);
+    backRight.setInverted(true);
+
+    frontRight.burnFlash();
+    frontLeft.burnFlash();
+    backLeft.burnFlash();
+    backRight.burnFlash();
   }
- 
+  
+  public void tankDrive(double rfOut, double rbOut, double lfOut, double lbOut){
+    frontRight.set(rfOut*1);
+    backRight.set(rbOut*1);
+    frontLeft.set(lfOut*1);
+    backLeft.set(lbOut*1);
+  }
+
   public Pose2d getPos(){
     return m_odometry.getPoseMeters();
 
@@ -198,27 +222,31 @@ public class DT extends SubsystemBase {
   public Command arcadeDriveCommand(double a, double b) {
     // A split-stick arcade command, with forward/backward controlled by the left
     // hand, and turning controlled by the right.
-    return run(() -> m_drive.arcadeDrive(a, b))
+    return run(() -> tankDrive(a, a, b, b))
         .withName("arcadeDrive");
   }
   public Command driveForward(){
     return run(() -> {
-     m_drive.arcadeDrive(1, 0);
+     //m_drive.arcadeDrive(1, 0);
+     tankDrive(1, 1, 1, 1);
     }).withTimeout(.77);
   }
   public Command driveIndefinitely(){
     return run(() -> {
-     m_drive.arcadeDrive(1, 0);
+     //m_drive.arcadeDrive(1, 0);
+     tankDrive(1,1,1,1);
     });
   }
   public Command stop(){
     return run(() -> {
-     m_drive.tankDrive(0, 0);
+    //m_drive.tankDrive(0, 0);
+    tankDrive(0,0,0,0);
     }).withTimeout(.5);
   }
   public Command driveBackwards(){
     return run(() -> {
-       m_drive.arcadeDrive(-1, 0);
+      //m_drive.arcadeDrive(-1, 0);
+      tankDrive(-1,-1,-1,-1);
     }).withTimeout(.8);
   } 
   public Command waitUntil(){
@@ -232,7 +260,9 @@ public class DT extends SubsystemBase {
     System.out.println(m_gyro.getRotation2d());
     // Using the tankDrive (or arcadeDrive) method of the driveTrain class and flipping the right side inputs to fit driver's tastes and have both sides move the same way
     //driveTrain.tankDrive(ps1.getRightY() * -1, ps1.getLeftY());
-    m_drive.arcadeDrive(ps1.getLeftY(), (ps1.getRightX()));
+    double axis1 = MathUtil.applyDeadband(ps1.getLeftY(), 0.25);
+    double axis2 = MathUtil.applyDeadband(-ps1.getRightX(), 0.25, 0.50);
+    tankDrive((axis1 - axis2), (axis1 - axis2), (axis1 + axis2), (axis1 + axis2));
     // m_odometry.update(m_gyro.getRotation2d(), leftEncoder.getDistance(), rightEncoder.getDistance());
   }
 }

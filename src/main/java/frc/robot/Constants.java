@@ -28,4 +28,10 @@ public final class Constants {
   public static final Encoder leftEncoder = new Encoder(OperatorConstants.leftEncoder[0], OperatorConstants.leftEncoder[1]);
   public static final Encoder rightEncoder = new Encoder(OperatorConstants.rightEncoder[0], OperatorConstants.rightEncoder[1]);
   }
+  public static class MotorPorts{
+    public static final int backRightPort = 2;
+    public static final int frontRightPort = 4;
+    public static final int backLeftPort = 1;
+    public static final int frontLeftPort = 3;
+  }
 }
